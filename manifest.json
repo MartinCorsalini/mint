@@ -1,13 +1,13 @@
 {
-  "name": "DeptosAdm · Mar del Plata",
-  "short_name": "DeptosAdm",
+  "name": "Mint · Gestión de departamentos",
+  "short_name": "Mint",
   "description": "Gestión de reservas, limpieza y caja de los departamentos.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fafafa",
-  "theme_color": "#e8134a",
+  "background_color": "#fbf9f4",
+  "theme_color": "#fbf9f4",
   "lang": "es-AR",
   "icons": [
     {
