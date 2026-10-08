@@ -1,5 +1,5 @@
 // Cambiar este número en cada entrega: así el celular detecta que hay versión nueva.
-const VERSION = 'mint-2026-10-07a';
+const VERSION = 'mint-2026-10-07b';
 const CACHE = VERSION;
 const BASE = new URL('./', self.location).pathname;
 
@@ -9,7 +9,6 @@ self.addEventListener('install', (e) => {
       .then(c => c.addAll([BASE, BASE + 'index.html', BASE + 'manifest.json']))
       .catch(() => null)
   );
-  // No se activa solo: espera a que la app le diga "actualizar".
 });
 
 self.addEventListener('activate', (e) => {
@@ -25,7 +24,6 @@ self.addEventListener('message', (e) => {
   if (e.data === 'VERSION' && e.source) e.source.postMessage({ version: VERSION });
 });
 
-// Red primero (sin caché del navegador para el HTML), caché como respaldo sin conexión.
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -40,5 +38,30 @@ self.addEventListener('fetch', (e) => {
         return res;
       })
       .catch(() => caches.match(req).then(hit => hit || caches.match(BASE + 'index.html')))
+  );
+});
+
+// Notificaciones
+self.addEventListener('push', (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Mint', {
+    body: d.body || '',
+    icon: BASE + 'icon-192.png',
+    badge: BASE + 'icon-192.png',
+    tag: d.tag || 'mint-avisos',
+    renotify: true,
+    data: { url: d.url || BASE }
+  }));
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const destino = (e.notification.data && e.notification.data.url) || BASE;
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+      for (const c of cs) { if ('focus' in c) return c.focus(); }
+      return self.clients.openWindow(destino);
+    })
   );
 });
