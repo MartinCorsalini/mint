@@ -1,5 +1,5 @@
 // Cambiar este número en cada entrega: así el celular detecta que hay versión nueva.
-const VERSION = 'mint-2026-10-07b';
+const VERSION = 'mint-2026-11-23a';
 const CACHE = VERSION;
 const BASE = new URL('./', self.location).pathname;
 
